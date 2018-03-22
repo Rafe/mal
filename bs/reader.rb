@@ -34,16 +34,16 @@ class Reader
   def read_form
     case (token = read_token)
     when ";"; nil
-    when "'"; [:quote, read_form]
-    when "`"; [:quasiquote, read_form]
-    when "~"; [:unquote, read_form]
-    when "~@"; [:"splice-unquote", read_form]
-    when "^"; meta = read_form; [:"with-meta", read_form, meta]
-    when "@"; [:deref, read_form]
-    when "("; [:list, read_list(List, ")")]
+    when "'"; List.new [:quote, read_form]
+    when "`"; List.new [:quasiquote, read_form]
+    when "~"; List.new [:unquote, read_form]
+    when "~@"; List.new [:"splice-unquote", read_form]
+    when "^"; meta = read_form; List.new [:"with-meta", read_form, meta]
+    when "@"; List.new [:deref, read_form]
+    when "("; read_list(List, ")")
     when ")"; raise "unexpected token ']' found"
-    when "["; [:list, read_list(Vector, "]")]
-    when "{"; [:list, Hash[*read_list(List, "}")].map { |k, v| [k, v] }]
+    when "["; read_list(Vector, "]")
+    when "{"; Hash[*read_list(List, "}")].map { |k, v| [k, v] }
     when "}"; raise "unexpected token '}' found"
     else
       read_atom(token)
