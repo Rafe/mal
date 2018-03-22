@@ -1,11 +1,13 @@
 require_relative "mal_readline"
+require_relative "reader"
+require_relative "printer"
 
 def READ(str)
-  str
+  Reader.new(str).read
 end
 
 def PRINT(exp)
-  exp
+  Printer.new.print(exp)
 end
 
 def EVAL(ast, env = {})
