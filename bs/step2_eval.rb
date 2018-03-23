@@ -21,9 +21,9 @@ def EVAL(ast, env = {})
   elsif ast.empty?
     ast
   else
-    el = eval_ast(ast, env)
-    f = el[0]
-    f[*el.drop(1)]
+    elements = eval_ast(ast, env)
+    fn = elements[0]
+    fn[*elements.drop(1)]
   end
 end
 
