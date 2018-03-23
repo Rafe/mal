@@ -16,14 +16,14 @@ end
 def EVAL(ast, env = {})
   #puts "EVAL: #{Printer.new.print(ast)}"
 
-  if !ast.is_a? List
-    eval_ast(ast, env)
-  elsif ast.empty?
-    ast
-  else
+  if ast.is_a? List
+    return ast if ast.empty?
+
     elements = eval_ast(ast, env)
     fn = elements[0]
     fn[*elements.drop(1)]
+  else
+    eval_ast(ast, env)
   end
 end
 
