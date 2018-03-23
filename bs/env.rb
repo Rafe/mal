@@ -1,13 +1,3 @@
-DEFAULT_ENV = {
-  :+ => -> (*args) { args.reduce(&:+) },
-  :- => -> (a, b) { a - b },
-  :* => -> (a, b) { a * b },
-  :/ => -> (a, b) { a / b },
-  :% => -> (a, b) { a % b },
-  :** => -> (a, b) { a ** b },
-}
-
-
 class Env
   attr_accessor :data, :outer
   def initialize(outer = nil)

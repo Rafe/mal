@@ -1,7 +1,7 @@
 require_relative 'types'
 
 class Printer
-  def _parse(obj)
+  def _parse(obj, print_readably=true)
     case obj
     when List
       "(" + obj.map { |x| _parse(x) }.join(" ") + ")"
@@ -14,7 +14,7 @@ class Printer
     when String
       if obj[0] == "\u029e"
         ":" + obj[1..-1]
-      elsif _r
+      elsif print_readably
         obj.inspect  # escape special characters
       else
         obj
