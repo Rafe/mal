@@ -4,7 +4,6 @@ require_relative "printer"
 require_relative "env"
 require_relative "types"
 require_relative "core"
-require 'pry'
 
 def READ(str)
   Reader.new(str).read
@@ -33,6 +32,21 @@ def EVAL(ast, env = nil)
     end
 
     EVAL(ast[2], let_env)
+  when :if
+    cond = EVAL(ast[1], env)
+    if cond
+      EVAL(ast[2], env)
+    else
+      return nil if ast[3].nil?
+
+      EVAL(ast[3], env)
+    end
+  when :do
+    eval_ast(ast.drop(1), env).last
+  when :"fn*"
+    -> (*args) {
+      EVAL(ast[2], Env.new(env, ast[1], List.new(args)))
+    }
   else
     elements = eval_ast(ast, env)
     fn = elements[0]
@@ -71,5 +85,5 @@ def REP(str)
 end
 
 while line = MalReadline.readline("user> ")
-  puts REP(line)
+  REP(line)
 end

@@ -1,8 +1,12 @@
 class Env
   attr_accessor :data, :outer
-  def initialize(outer = nil)
+  def initialize(outer = nil, binds = [], args = [])
     @data = {}
     @outer = outer
+
+    binds.each_index do |i|
+      data[binds[i]] = args[i]
+    end
   end
 
   def find(key)
