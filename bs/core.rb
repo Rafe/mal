@@ -22,8 +22,8 @@ MAL_CORE = {
   :list => -> (*args) { List.new(args) },
   :list? => -> (a) { a.is_a?(List) },
   :empty? => -> (a) { a.empty? },
-  :count => -> (a) { a ==nil ? 0 : a.length },
-  :size => -> (a) { a ==nil ? 0 : a.length },
+  :count => -> (a) { a == nil ? 0 : a.length },
+  :size => -> (a) { a == nil ? 0 : a.length },
 }
 
 MAL_CORE[:str] = MAL_CORE[:"pr-str"]
