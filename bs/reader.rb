@@ -24,7 +24,7 @@ class Reader
   end
 
   def unescape(str)
-    str.gsub(/\./, {
+    str[1..-2].gsub(/\\./, {
       "\\\\" => "\\",
       "\\n" => "\n",
       "\\\"" => '"',

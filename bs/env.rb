@@ -32,7 +32,7 @@ class Env
   end
 
   def get(key)
-    if val = data.find(key)
+    if val = find(key)
       val
     else
       raise "exception: key #{key} does not found"
