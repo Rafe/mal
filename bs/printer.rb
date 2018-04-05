@@ -20,7 +20,7 @@ class Printer
         obj
       end
     when Atom
-      "(atom " + _pr_str(obj.val, true) + ")"
+      "(atom " + _parse(obj.val, true) + ")"
     when nil
       "nil"
     else
