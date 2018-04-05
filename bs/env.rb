@@ -28,12 +28,12 @@ class Env
   end
 
   def missing?(key)
-    !find(key)
+    find(key).nil?
   end
 
   def get(key)
-    if val = find(key)
-      val
+    if !missing?(key)
+      find(key)
     else
       raise "exception: key #{key} does not found"
     end

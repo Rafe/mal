@@ -42,4 +42,11 @@ MAL_CORE = {
   :swap! => -> (atom, fn, *args) { atom.val = fn.(atom.val, *args) },
   :cons => -> (a, b) { List.new(b.clone.unshift(a)) },
   :concat => -> (*args) { args ||= []; List.new(args.reduce(&:+)) },
+  :nth => -> (list, n) {
+    raise "nth: index out of range" if n >= list.length
+    list[n]
+  },
+  :first => -> (list=[]) { list.first },
+  :last => -> (list=[]) { list.last },
+  :rest => -> (list=[]) { list.drop(1) },
 }

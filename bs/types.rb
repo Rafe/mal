@@ -12,13 +12,14 @@ class Atom
 end
 
 class Function < Proc
-  attr_accessor :ast, :env, :params
+  attr_accessor :ast, :env, :params, :is_macro
 
-  def initialize(ast = nil, env = nil, params = nil, &block)
+  def initialize(ast = nil, env = nil, params = nil, is_macro = false, &block)
     super()
     @ast = ast
     @env = env
     @params = params
+    @is_macro = is_macro
   end
 
   def get_env(args)

@@ -22,6 +22,22 @@ def quasiquote(ast)
   end
 end
 
+def macro_call?(ast, env)
+  return false unless ast.is_a?(List) && ast[0].is_a?(Symbol)
+
+  macro = env.find(ast[0])
+
+  macro.is_a?(Function) && macro.is_macro
+end
+
+def macroexpand(ast, env)
+  while macro_call?(ast, env)
+    macro = env.get(ast[0])
+    ast = macro[*ast[1..-1]]
+  end
+  return ast
+end
+
 def READ(str)
   Reader.new(str).read
 end
@@ -36,11 +52,24 @@ def EVAL(ast, env = nil)
       return eval_ast(ast, env)
     end
 
+    ast = macroexpand(ast, env)
+
+    if !ast.is_a? List
+      return eval_ast(ast, env)
+    end
     return ast if ast.empty?
 
     case ast[0]
-    when :def!
-      return env.set(ast[1], EVAL(ast[2], env))
+    when :def!, :defmacro!
+      val = EVAL(ast[2], env)
+
+      if ast[0] == :defmacro!
+        val.is_macro = true
+      end
+
+      return env.set(ast[1], val)
+    when :macroexpand
+      return macroexpand(ast[1], env)
     when :"let*"
       let_env = Env.new(env)
       ast[1].each_slice(2) do |k, e|
@@ -113,6 +142,15 @@ end
 REPL_ENV.set(:eval, -> (ast) { EVAL(ast, REPL_ENV) })
 RE <<-MAL
   (def! load-file (fn* (f) (eval (read-string (str "( do " (slurp f) ")")))))
+MAL
+RE <<-MAL
+  (def! not (fn* (a) (if a false true)))
+MAL
+RE <<-MAL
+  (defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))
+MAL
+RE <<-MAL
+  (defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let* (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))
 MAL
 REPL_ENV.set(:"*ARGV*", List.new(ARGV.slice(1, ARGV.length) || []))
 
