@@ -32,7 +32,7 @@ MAL_CORE = {
   :list? => -> (a) { a.is_a?(List) },
   :empty? => -> (a) { a.empty? },
   :count => -> (a) { a == nil ? 0 : a.length },
-  :size => -> (a) { a == nil ? 0 : a.length },
+  :size => -> (a) { a == nil ? 0 : a.size },
   :"read-string" => -> (str) { Reader.new(str).read },
   :"slurp" => -> (name) { File.read(name) },
   :atom => -> (val) { Atom.new(val) },

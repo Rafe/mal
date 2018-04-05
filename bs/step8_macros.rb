@@ -147,10 +147,10 @@ RE <<-MAL
   (def! not (fn* (a) (if a false true)))
 MAL
 RE <<-MAL
-  (defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))
+  (defmacro! cond (fn* (& xs) (if (> (size xs) 0) (list 'if (first xs) (if (> (size xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))
 MAL
 RE <<-MAL
-  (defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) `(let* (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))
+  (defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (size xs)) (first xs) `(let* (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))
 MAL
 REPL_ENV.set(:"*ARGV*", List.new(ARGV.slice(1, ARGV.length) || []))
 
