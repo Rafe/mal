@@ -6,6 +6,22 @@ require_relative "types"
 require_relative "core"
 require 'pry'
 
+def pair?(obj)
+  sequential?(obj) && obj.length > 0
+end
+
+def quasiquote(ast)
+  if !pair?(ast)
+    List.new [:quote, ast]
+  elsif ast[0] == :unquote
+    ast[1]
+  elsif pair?(ast[0]) && ast[0][0] == :"splice-unquote"
+    List.new [:concat, ast[0][1], quasiquote(ast.drop(1))]
+  else
+    List.new [:cons, quasiquote(ast[0]), quasiquote(ast.drop(1))]
+  end
+end
+
 def READ(str)
   Reader.new(str).read
 end
@@ -43,6 +59,10 @@ def EVAL(ast, env = nil)
       return Function.new(ast[2], env, ast[1]) do |*args|
         EVAL(ast[2], Env.new(env, ast[1], List.new(args)))
       end
+    when :quote
+      return ast[1]
+    when :quasiquote
+      ast = quasiquote(ast[1])
     else
       elements = eval_ast(ast, env)
       fn = elements[0]

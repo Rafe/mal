@@ -40,4 +40,6 @@ MAL_CORE = {
   :deref => -> (atom) { atom.val },
   :reset! => -> (atom, val) { atom.val = val },
   :swap! => -> (atom, fn, *args) { atom.val = fn.(atom.val, *args) },
+  :cons => -> (a, b) { List.new(b.clone.unshift(a)) },
+  :concat => -> (*args) { args ||= []; List.new(args.reduce(&:+)) },
 }

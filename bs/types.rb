@@ -1,4 +1,3 @@
-
 class List < Array
 end
 
@@ -25,4 +24,8 @@ class Function < Proc
   def get_env(args)
     Env.new(@env, @params, args)
   end
+end
+
+def sequential?(obj)
+  obj.is_a?(List) || obj.is_a?(Vector)
 end
