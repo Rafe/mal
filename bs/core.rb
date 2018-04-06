@@ -3,6 +3,10 @@ require_relative "types"
 
 printer = Printer.new
 
+def to_hash(args=[])
+  Hash[args.each_slice(2).to_a]
+end
+
 MAL_CORE = {
   :+ => -> (*args) { args.reduce(&:+) },
   :- => -> (a, b) { a - b },
@@ -57,11 +61,18 @@ MAL_CORE = {
   :symbol? => -> (val) { val.is_a? Symbol },
   :vector => -> (*args) { Vector.new(args) },
   :vector? => -> (vec) { vec.is_a?(Vector) },
-  :"hash-map" => -> (*args) { Hash[args.each_slice(2).to_a] },
+  :"hash-map" => -> (*args) { to_hash(args) },
   :get => -> (map, key) { map[key] },
   :contains? => -> (map, key) { map.key?(key) },
   :keys => -> (map) { List.new(map.keys) },
   :vals => -> (map) { List.new(map.values) },
-  :map => -> (fn, list) { list.map(&fn) },
+  :map => -> (fn, list) { list.map(&:fn) },
+  :map? => -> (map) { map.is_a?(Hash) },
   :apply => -> (fn, *args, rest) { fn.(*args.concat(rest || [])) },
+  :assoc => -> (map, *rest) {
+    map.merge(to_hash(rest))
+  },
+  :dissoc => -> (map, *rest) {
+    rest.reduce(map.clone) {|h, k| h.delete(k); h}
+  },
 }
