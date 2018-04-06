@@ -92,6 +92,23 @@ def EVAL(ast, env = nil)
       return ast[1]
     when :quasiquote
       ast = quasiquote(ast[1])
+    when :"try*"
+      begin
+        return EVAL(ast[1], env)
+      rescue Exception => ex
+        if ex.is_a? MalException
+          ex = ex.data
+        else
+          ex = ex.message
+        end
+
+        handler = ast[2]
+        if handler && handler[0] == :"catch*"
+          return EVAL(handler[2], Env.new(env, [handler[1]], [ex]))
+        else
+          raise ex
+        end
+      end
     else
       elements = eval_ast(ast, env)
       fn = elements[0]

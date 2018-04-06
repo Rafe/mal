@@ -27,6 +27,13 @@ class Function < Proc
   end
 end
 
+class MalException < StandardError
+  attr_accessor :data
+  def initialize(data)
+    @data = data
+  end
+end
+
 def sequential?(obj)
   obj.is_a?(List) || obj.is_a?(Vector)
 end
