@@ -1,14 +1,20 @@
 class List < Array
+  attr_accessor :meta
 end
 
 class Vector < Array
+  attr_accessor :meta
 end
 
 class Atom
-  attr_accessor :val
+  attr_accessor :val, :meta
   def initialize(val)
       @val = val
   end
+end
+
+class Proc
+  attr_accessor :meta
 end
 
 class Function < Proc

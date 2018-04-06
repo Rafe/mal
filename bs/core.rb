@@ -75,4 +75,11 @@ MAL_CORE = {
   :dissoc => -> (map, *rest) {
     rest.reduce(map.clone) {|h, k| h.delete(k); h}
   },
+  :readline => -> (prompt) {
+    Readline.readline(prompt, true)
+  },
+  :meta => -> (obj) { obj.meta },
+  :"with-meta" => -> (obj, message) {
+    obj.clone.tap { |n| n.meta = message }
+  },
 }

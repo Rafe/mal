@@ -4,7 +4,6 @@ require_relative "printer"
 require_relative "env"
 require_relative "types"
 require_relative "core"
-require 'pry'
 
 def pair?(obj)
   sequential?(obj) && obj.length > 0
@@ -169,6 +168,9 @@ MAL
 RE <<-MAL
   (defmacro! or (fn* (& xs) (if (empty? xs) nil (if (= 1 (size xs)) (first xs) `(let* (or_FIXME ~(first xs)) (if or_FIXME or_FIXME (or ~@(rest xs))))))))
 MAL
+RE("(def! *host-language* \"ruby\")")
+RE("(def! *gensym-counter* (atom 0))")
+RE("(def! gensym (fn* [] (symbol (str \"G__\" (swap! *gensym-counter* (fn* [x] (+ 1 x)))))))")
 REPL_ENV.set(:"*ARGV*", List.new(ARGV.slice(1, ARGV.length) || []))
 
 if ARGV.size > 0
@@ -177,6 +179,12 @@ if ARGV.size > 0
   exit 0
 end
 
+RE("(println (str \"Mal [\" *host-language* \"]\"))")
 while line = MalReadline.readline("user> ")
-  REP(line)
+  begin
+    REP(line)
+  rescue Exception => e
+    puts "Error: #{e}"
+    puts "\t#{e.backtrace.join("\n\t")}"
+  end
 end
